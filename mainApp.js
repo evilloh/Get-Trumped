@@ -3,9 +3,15 @@ const MainApp = {
   ctx: undefined,
   windowSize: {
     x: undefined,
-    y: undefined,
-    player: undefined,
-    fps: 60
+    y: undefined
+  },
+  player: undefined,
+  fps: 60,
+  framesCounter: 0,
+  keys: {
+    TOP: 87,
+    LEFT: 65,
+    RIGHT: 68
   },
 
   init: function(id) {
@@ -13,23 +19,30 @@ const MainApp = {
     this.ctx = this.canvasDom.getContext("2d");
     this.setDimensions();
     this.setHandlers();
-    this.setEventListeners();
     // START GAME MUST BE DONE MANUALLY
     this.startGame();
   },
 
   startGame: function() {
-    this.player = new Player(this.ctx, this.windowSize);
-    this.player.drawFilledSquares();
+    this.fps = 60;
+    this.reset();
+
+    // controlamos que frameCounter no sea superior a 1000
+
     setInterval(() => {
+      if (this.framesCounter > 1000) {
+        this.framesCounter = 0;
+      }
+      this.framesCounter++;
       this.clear();
-      this.player.drawFilledSquares();
+      this.drawAll();
+      this.moveAll();
       // this.ball.draw();
     }, 1000 / this.fps);
   },
 
   setDimensions: function() {
-    this.canvasDom.setAttribute("width", window.innerWidth);
+    this.canvasDom.setAttribute("width", window.innerWidth - 20);
     this.canvasDom.setAttribute("height", window.innerHeight - 20);
     this.windowSize.y = window.innerHeight;
     this.windowSize.x = window.innerWidth;
@@ -39,30 +52,46 @@ const MainApp = {
     window.onresize = () => this.setDimensions();
   },
 
-  clear: function() {
-    this.ctx.clearRect(0, 0, this.winW, this.winH);
+  reset: function() {
+    this.player = new Player(
+      this.ctx,
+      this.windowSize,
+      this.keys,
+      this.framesCounter
+    );
+    this.boss = new Boss(this.ctx, this.windowSize, this.framesCounter);
+    this.background = new Background(this.ctx, this.windowSize);
+    this.framesCounter = 0;
   },
 
-  setEventListeners: function() {
-    document.onkeyup = e => {
-      // if (e.keyCode === 37) this.ball.moveLeft();
-      // if (e.keyCode === 39) this.ball.moveRight();
-    };
+  drawAll: function() {
+    this.background.drawBackground();
+    this.player.drawPlayer(this.framesCounter);
+    this.boss.drawBoss(this.framesCounter);
+  },
+
+  moveAll: function() {
+    this.player.move();
+    this.boss.move();
+  },
+
+  clear: function() {
+    this.ctx.clearRect(0, 0, this.winW, this.winH);
   }
 };
 
-class Player {
+class Background {
   constructor(ctx, windowSize) {
     this.ctx = ctx;
     this.windowSize = windowSize;
+    this.img = new Image();
+    this.img.src = "images/backgroundImage.jpg";
   }
-
-  drawFilledSquares() {
-    this.ctx.fillStyle = "blue"; // cambia los colores de relleno
-    this.ctx.fillRect(this.windowSize.x / 6, this.windowSize.y / 6, 100, 100);
+  drawBackground() {
+    this.ctx.drawImage(this.img, 0, 0, this.windowSize.x, this.windowSize.y);
   }
 }
 
-class Boss {}
+
 
 MainApp.init("mycanvas");
