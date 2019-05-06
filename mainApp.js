@@ -11,7 +11,8 @@ const MainApp = {
   keys: {
     TOP: 87,
     LEFT: 65,
-    RIGHT: 68
+    RIGHT: 68,
+    SPACE: 32
   },
 
   init: function(id) {
@@ -62,12 +63,15 @@ const MainApp = {
     this.boss = new Boss(this.ctx, this.windowSize, this.framesCounter);
     this.background = new Background(this.ctx, this.windowSize);
     this.framesCounter = 0;
+    this.playerUi = new PlayerUI(this.ctx, this.windowSize);
   },
 
   drawAll: function() {
     this.background.drawBackground();
     this.player.drawPlayer(this.framesCounter);
     this.boss.drawBoss(this.framesCounter);
+    this.playerUi.drawUi();
+    
   },
 
   moveAll: function() {
@@ -92,6 +96,16 @@ class Background {
   }
 }
 
-
+class PlayerUI {
+  constructor(ctx, windowSize) {
+    this.ctx = ctx;
+    this.windowSize = windowSize;
+    this.img = new Image();
+    this.img.src = "images/life1.png";
+  }
+  drawUi() {
+    this.ctx.drawImage(this.img, 50, 50, 180, 181);
+  }
+}
 
 MainApp.init("mycanvas");

@@ -18,6 +18,7 @@ class Player {
     // player properties
     this.vy = 0;
     this.setListeners();
+    this.bullets = [];
   }
 
   drawPlayer(framesCounter) {
@@ -33,16 +34,25 @@ class Player {
       this.h
     );
     this.animateImg(framesCounter);
+
+    this.bullets = this.bullets.filter(bullet => {
+      return bullet.x < this.windowSize.x;
+    });
+
+    this.bullets.forEach(function(bullet) {
+      bullet.draw();
+      bullet.move();
+    });
   }
   setListeners() {
     document.onkeydown = function(event) {
       if (event.keyCode === this.keys.LEFT && this.x > 0) {
-        this.x -= 15;
+        this.x -= 20;
       } else if (
         event.keyCode === this.keys.RIGHT &&
         this.x < this.windowSize.x * 0.5
       ) {
-        this.x += 15;
+        this.x += 20;
       } else if (
         event.keyCode === this.keys.TOP &&
         this.y < this.y0 &&
@@ -54,6 +64,8 @@ class Player {
       } else if (event.keyCode === this.keys.TOP && this.y == this.y0) {
         this.y -= 45;
         this.vy -= 10;
+      } else if (event.keyCode == this.keys.SPACE) {
+        this.shoot();
       }
     }.bind(this);
   }
@@ -70,6 +82,18 @@ class Player {
       this.vy += gravity;
       this.y += this.vy;
     }
+  }
+  shoot() {
+    console;
+    let bullet = new Bullet(
+      this.x + this.w,
+      this.y + this.h * 0.4,
+      this.y0,
+      this.h,
+      this.ctx
+    );
+
+    this.bullets.push(bullet);
   }
 
   checkIfFalling() {
