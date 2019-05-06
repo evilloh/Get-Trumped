@@ -8,11 +8,13 @@ const MainApp = {
   player: undefined,
   fps: 60,
   framesCounter: 0,
+  framesCounterBullets: 0,
   keys: {
     TOP: 87,
     LEFT: 65,
     RIGHT: 68,
-    SPACE: 32
+    SPACE: 32,
+    E_KEY: 69
   },
 
   init: function(id) {
@@ -32,8 +34,12 @@ const MainApp = {
 
     setInterval(() => {
       if (this.framesCounter > 1000) {
-        this.framesCounter = 0;
+        this.framesCounter = 20;
       }
+      if (this.framesCounterBullets > 1000) {
+        this.framesCounterBullets = 1;
+      }
+      this.framesCounterBullets++;
       this.framesCounter++;
       this.clear();
       this.drawAll();
@@ -60,7 +66,12 @@ const MainApp = {
       this.keys,
       this.framesCounter
     );
-    this.boss = new Boss(this.ctx, this.windowSize, this.framesCounter);
+    this.boss = new Boss(
+      this.ctx,
+      this.windowSize,
+      this.framesCounter,
+      this.framesCounterBullets
+    );
     this.background = new Background(this.ctx, this.windowSize);
     this.framesCounter = 0;
     this.playerUi = new PlayerUI(this.ctx, this.windowSize);
@@ -69,14 +80,14 @@ const MainApp = {
   drawAll: function() {
     this.background.drawBackground();
     this.player.drawPlayer(this.framesCounter);
-    this.boss.drawBoss(this.framesCounter);
+    this.boss.drawBoss(this.framesCounter, this.framesCounterBullets);
     this.playerUi.drawUi();
-    
   },
 
   moveAll: function() {
     this.player.move();
     this.boss.move();
+    // this.boss.animateImg(this.framesCounter);
   },
 
   clear: function() {

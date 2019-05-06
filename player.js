@@ -18,7 +18,10 @@ class Player {
     // player properties
     this.vy = 0;
     this.setListeners();
+    this.bombCounters = 4;
+
     this.bullets = [];
+    this.bombBullets = [];
   }
 
   drawPlayer(framesCounter) {
@@ -34,14 +37,23 @@ class Player {
       this.h
     );
     this.animateImg(framesCounter);
-
+    //  ARRAY OF GUN BULLETS
     this.bullets = this.bullets.filter(bullet => {
       return bullet.x < this.windowSize.x;
     });
-
+    // ARRAY OF BOMB BULLETS
+    this.bombBullets = this.bombBullets.filter(bullet => {
+      return bullet.x < this.windowSize.x || bullet.y < this.windowSize.y;
+    });
+    //
     this.bullets.forEach(function(bullet) {
       bullet.draw();
       bullet.move();
+    });
+
+    this.bombBullets.forEach(function(bombBullet) {
+      bombBullet.draw();
+      bombBullet.move();
     });
   }
   setListeners() {
@@ -66,6 +78,8 @@ class Player {
         this.vy -= 10;
       } else if (event.keyCode == this.keys.SPACE) {
         this.shoot();
+      } else if (event.keyCode == this.keys.E_KEY) {
+        this.shootBomb();
       }
     }.bind(this);
   }
@@ -84,16 +98,27 @@ class Player {
     }
   }
   shoot() {
-    console;
     let bullet = new Bullet(
       this.x + this.w,
-      this.y + this.h * 0.4,
-      this.y0,
+      this.y + this.h * 0.3,
       this.h,
       this.ctx
     );
 
     this.bullets.push(bullet);
+  }
+
+  shootBomb() {
+    if (this.bombCounters > 0) {
+      let bombBullet = new BombBullet(
+        this.x + this.w,
+        this.y + this.h * 0.2,
+        this.h,
+        this.ctx
+      );
+      this.bombBullets.push(bombBullet);
+      this.bombCounters -= 1;
+    }
   }
 
   checkIfFalling() {
