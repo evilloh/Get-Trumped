@@ -17,6 +17,7 @@ class Boss {
     this.img.frameIndex = 0;
     // boss properties
     this.vel = 2;
+    this.health = 10;
 
     // bullets arrays
     this.bossShots1 = [];
@@ -114,6 +115,8 @@ class BossShots1 {
     this.x = x - 300;
     this.y = y + 160;
     this.vel = 5;
+    this.w = 350;
+    this.h = 70;
     this.framesCounter = framesCounter;
     this.imgBossShot1 = new Image();
     this.sentencesArray = [
@@ -134,7 +137,7 @@ class BossShots1 {
   }
 
   draw() {
-    this.ctx.drawImage(this.imgBossShot1, this.x, this.y, 350, 70);
+    this.ctx.drawImage(this.imgBossShot1, this.x, this.y, this.w, this.h);
   }
   animate() {
     this.x -= this.vel;
@@ -147,6 +150,8 @@ class BossShots2 {
     this.x = x;
     this.y = 0;
     this.vel = 5;
+    this.w = 45;
+    this.h = 30;
     this.framesCounter = framesCounter;
     this.imgBossShot2 = new Image();
     this.imgBossShot2.src = "images/twitterLogo.png";
@@ -155,7 +160,7 @@ class BossShots2 {
   }
 
   draw() {
-    this.ctx.drawImage(this.imgBossShot2, this.randomX, this.y, 45, 30);
+    this.ctx.drawImage(this.imgBossShot2, this.randomX, this.y, this.w, this.h);
   }
   animate() {
     this.y += this.vel;

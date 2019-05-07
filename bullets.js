@@ -11,10 +11,11 @@ class Bullet {
     this.gravity = 0.25;
     this.imgGunBullet = new Image();
     this.imgGunBullet.src = "images/bullet.png";
+    this.w = 20;
   }
 
   draw() {
-    this.ctx.drawImage(this.imgGunBullet, this.x, this.y, 20, 20);
+    this.ctx.drawImage(this.imgGunBullet, this.x, this.y, this.w, this.w);
     // this.ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
   }
 
