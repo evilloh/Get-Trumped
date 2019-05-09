@@ -17,7 +17,7 @@ class Boss {
     this.img.frameIndex = 0;
     // boss properties
     this.vel = 2;
-    this.health = 10;
+    this.health = 120;
 
     // bullets arrays
     this.bossShots1 = [];

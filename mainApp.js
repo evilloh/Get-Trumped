@@ -17,10 +17,11 @@ const MainApp = {
     E_KEY: 69,
     DOWN: 83
   },
-  lifecounter: 5,
+  lifecounter: 8,
   playerisHit: true,
   playerisHitQuote: true,
   bossIsHit: true,
+  introCounter: 0,
 
   init: function(id) {
     this.canvasDom = document.getElementById(id);
@@ -29,8 +30,21 @@ const MainApp = {
     this.setHandlers();
     // START GAME MUST BE DONE MANUALLY
     this.startGame();
+    // this.introGame();
   },
+  // introGame: function() {
+  //   this.reset();
+  //   setInterval(() => {
+  //     this.clear();
+  //     this.drawIntro();
+  //   }, 1000);
+  // },
 
+  // drawIntro() {
+  //   this.intro = new Intro(this.ctx, this.windowSize, this.introCounter);
+  //   this.intro.draw();
+  //   if (this.introCounter < 8) this.introCounter++;
+  // },
   startGame: function() {
     this.fps = 60;
     this.reset();
@@ -98,6 +112,8 @@ const MainApp = {
   setDimensions: function() {
     this.canvasDom.setAttribute("width", window.innerWidth - 20);
     this.canvasDom.setAttribute("height", window.innerHeight - 20);
+    // this.windowSize.y = window.innerHeight;
+    // this.windowSize.x = window.innerWidth;
     this.windowSize.y = window.innerHeight;
     this.windowSize.x = window.innerWidth;
   },
@@ -140,7 +156,7 @@ const MainApp = {
   },
 
   clear: function() {
-    this.ctx.clearRect(0, 0, this.winW, this.winH);
+    this.ctx.clearRect(0, 0, this.windowSize.x, this.windowSize.y);
   },
 
   eliminateCollisionCatBomb: function() {
@@ -284,6 +300,9 @@ class PlayerUI {
     this.lifecounter = lifecounter;
     this.img = new Image();
     this.uiArray = [
+      "images/life7.png",
+      "images/life7.png",
+      "images/life6.png",
       "images/life5.png",
       "images/life5.png",
       "images/life4.png",
@@ -319,7 +338,27 @@ class CatBombs {
   }
 }
 
-MainApp.init("mycanvas");
+// class Intro {
+//   constructor(ctx, windowSize) {
+//     this.ctx = ctx;
+//     this.windowSize = windowSize;
+//     this.introArray = [
+//       "images/intro1.jpg",
+//       "images/intro2.jpg",
+//       "images/intro3.jpg",
+//       "images/intro4.jpg",
+//       "images/intro5.jpg",
+//       "images/intro6.jpg",
+//       "images/intro6.jpg"
+//     ];
+//   }
+//   draw() {
+//     this.img = new Image();
+//     this.img.src = this.introArray[MainApp.introCounter];
+//     this.ctx.drawImage(this.img, 0, 0, this.windowSize.x, this.windowSize.y);
+//   }
+// }
+
 
 // class CollisionExplosion {
 //   constructor(ctx, x, y) {

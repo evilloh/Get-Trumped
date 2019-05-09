@@ -1,0 +1,103 @@
+* {
+  font-family: sans-serif;
+}
+
+body {
+  text-align: center;
+}
+
+#mainGame {
+  margin-top: 10%;
+  vertical-align: middle;
+}
+
+#startGame {
+  width: 100px;
+  height: 30px;
+}
+
+.right-col {
+  /* background-color: red; */
+  height: 40em;
+}
+
+#intro-img {
+  width: 80%;
+  margin-top: 3em;
+  box-shadow: 3px 4px 18px 1px #1f1c20;
+}
+
+.outer {
+  background-color: rgb(85, 84, 77);
+}
+.videoDiv {
+  margin-top: 3em;
+}
+
+h1 {
+  padding-top: 0.8em;
+  font-size: 2.7em;
+  /* color: #4b3830; */
+  color: #1f1c20;
+}
+
+p {
+  padding: 0.8em 2em 1.2em 2em;
+  font-size: 1.3em;
+  color: #d9cdc9;
+}
+
+.btn:link,
+.btn:hover {
+  color: #1f1c20;
+}
+
+.btn {
+  display: inline-block;
+  font-weight: 600;
+  color: #1f1c20;
+  border: 1px solid #1f1c20;
+  padding: 1em 1.5em;
+  border-radius: 4px;
+  background-color: #ac9289;
+  box-shadow: 3px 4px 18px 1px #1f1c20;
+}
+
+.btn-play {
+  background-color: #dad390;
+  margin-right: 4em;
+}
+
+.pugMath {
+  display: block;
+  width: 90%;
+}
+
+h2 {
+  margin-top: 2em;
+  font-size: 2.2em;
+}
+
+.btn-instructions {
+  margin-bottom: 2em;
+}
+
+#secondRow {
+  display: none;
+}
+
+#thirdRow {
+  display: none;
+}
+
+#fourthRow {
+  display: none;
+}
+
+#fourthRow img {
+  width: 400px;
+}
+
+.disclaimer {
+  font-style: italic;
+}
