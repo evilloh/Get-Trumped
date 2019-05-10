@@ -1,98 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <link rel="stylesheet" href="css/bootstrap-grid.min.css" />
-    <link rel="stylesheet" href="css/bootstrap-reboot.min.css" />
-    <link rel="stylesheet" href="css/style.css" />
-    <title>Get Trumped</title>
-  </head>
-  <body>
-    <div class="outer" id="introContainer">
-      <header id="mainGame" class="container">
-        <!-- MAIN PAGE CONTENT -->
-        <div class="row" id="mainRow">
-          <div class="col videoDiv">
-            <video width="604" height="378" controls>
-              <source src="video1.mp4" type="video/mp4" />
-            </video>
-          </div>
-          <div class="col right-col">
-            <img
-              onmouseover="changeImg(this)"
-              onmouseout="normalImg(this)"
-              src="images/introImg.jpg"
-              alt="in pug we trust"
-              id="intro-img"
-            />
-            <h1>In Pug We Trust</h1>
-            <p>
-              Hello there! Hurry up, there's not much time left to save the
-              world! Check out what's going on in the video on the left and
-              let's get started!
-            </p>
-            <a href="#" class="btn btn-play" id="play-button">PLAY</a>
-            <a href="#" class="btn btn-instructions" id="instructions-button"
-              >INSTRUCTIONS</a
-            >
-          </div>
-        </div>
-        <!-- INSTRUCTIONS PAGE CONTENT -->
-        <div class="row" id="secondRow">
-          <div class="col firstPage">
-            <h2>Some simple Mathematics</h2>
-            <img
-              src="images/mathematic.png"
-              alt="Pug Mathematics"
-              class="pugMath"
-            />
-            <a href="#" class="btn btn-instructions" id="btn-weapon">WEAPONS</a>
-          </div>
-        </div>
-        <!-- SECOND PAGE INSTRUCTIONS -->
-        <div class="row" id="thirdRow">
-          <div class="col secondPage">
-            <h2>Here are your weapons</h2>
-            <img src="images/catSolo.png" alt="cat gun" />
-            <img src="images/bullet.png" alt="hair ball bullet" />
-            <img src="images/catbomb.png" alt="cat bomb" />
-            <a href="#" class="btn btn-instructions" id="btn-enemy"
-              >YOUR ENEMY</a
-            >
-          </div>
-        </div>
-        <!-- THIRD PAGE INSTRUCTIONS -->
-        <div class="row" id="fourthRow">
-          <div class="col thirdPage">
-            <h2>Your Target</h2>
-            <div class="col">
-              <img src="images/donald-trump_0.jpg" alt="donald trump" />
-            </div>
-            <div class="col">
-              <p>
-                You're impersonating Ugin the Pug and Bigolo, his trustworthy
-                assistant. Your objective is to defeat the evil representation
-                of all evils with your skills and agility. Be careful tho, he
-                may be trickier than expected!
-              </p>
-              <p class="disclaimer">
-                All characters and events in this game, even those based on real
-                people, are entirely fictional.
-              </p>
-            </div>
-            <a href="#" class="btn btn-instructions" id="home-button">Home</a>
-          </div>
-        </div>
-      </header>
-    </div>
-    <canvas id="mycanvas"></canvas>
 
-    <script type="text/javascript" src="page.js"></script>
-    <script type="text/javascript" src="player.js"></script>
-    <script type="text/javascript" src="boss.js"></script>
-    <script type="text/javascript" src="mainApp.js"></script>
-    <script type="text/javascript" src="bullets.js"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link rel="stylesheet" href="css/bootstrap-grid.min.css" />
+  <link rel="stylesheet" href="css/bootstrap-reboot.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <title>Get Trumped</title>
+</head>
+
+<body>
+  <div class="outer" id="introContainer">
+    <header id="mainGame" class="container">
+      <!-- MAIN PAGE CONTENT -->
+      <div class="row" id="mainRow">
+        <div class="col videoDiv">
+          <video width="604" height="378" controls>
+            <source src="video1.mp4" type="video/mp4" />
+          </video>
+        </div>
+        <div class="col right-col">
+          <img onmouseover="changeImg(this)" onmouseout="normalImg(this)" src="images/introImg.jpg"
+            alt="in pug we trust" id="intro-img" />
+          <h1>In Pug We Trust</h1>
+          <p>
+            Hello there! Hurry up, there's not much time left to save the
+            world! Check out what's going on in the video on the left and
+            let's get started!
+          </p>
+          <a href="#" class="btn btn-play" id="play-button">PLAY</a>
+          <a href="#" class="btn btn-instructions" id="instructions-button">INSTRUCTIONS</a>
+        </div>
+      </div>
+      <!-- INSTRUCTIONS PAGE CONTENT -->
+      <div class="row" id="secondRow">
+        <div class="col firstPage">
+          <h2>Some simple Mathematics</h2>
+          <img src="images/mathematic.png" alt="Pug Mathematics" class="pugMath" />
+          <a href="#" class="btn btn-instructions" id="btn-weapon">WEAPONS</a>
+        </div>
+      </div>
+      <!-- SECOND PAGE INSTRUCTIONS -->
+      <div class="row" id="thirdRow">
+        <div class="col-12 secondPage">
+          <img src="images/WEAPONS.png" alt="cat gun" />
+        </div>
+        <div class="col-12 secondPage">
+
+          <a href="#" class="btn btn-instructions" id="btn-movements">MOVEMENTS</a>
+        </div>
+      </div>
+      <!-- SECOND PAGE INSTRUCTIONS BUT MOVEMENTS-->
+      <div class="row" id="thirdtwoRow">
+        <div class="col-12 secondPage">
+          <img src="images/movements.png" alt="cat gun" />
+        </div>
+        <div class="col-12 secondPage">
+
+          <a href="#" class="btn btn-instructions" id="btn-enemy">YOUR ENEMY</a>
+        </div>
+      </div>
+      <!-- THIRD PAGE INSTRUCTIONS -->
+      <div class="row" id="fourthRow">
+        <h2 class="yourTarget">Your Target</h2>
+        <div class="col thirdPage">
+          <img src="images/donald-trump_0.jpg" alt="donald trump" />
+        </div>
+        <div class="col">
+          <p>
+            You're impersonating Ugin the Pug and Bigolo, his trustworthy
+            assistant. Your objective is to defeat the evil representation
+            of all evils with your skills and agility. Be careful tho, he
+            may be trickier than expected!
+          </p>
+          <p class="disclaimer">
+            All characters and events in this game, even those based on real
+            people, are entirely fictional.
+          </p>
+        </div>
+        <a href="#" class="btn btn-instructions" id="home-button">Home</a>
+      </div>
+    </header>
+  </div>
+
+  <canvas id="mycanvas"></canvas>
+
+  <div id="gameOver" class="modal">
+    <div class="col videoDiv">
+      <video id="gameOverVideo" width="980" height="538" controls autoplay>
+        <source src="video-game-over.mp4" type="video/mp4" />
+      </video>
+    </div>
+    <a href="index.html" class="btn btn-tryAgain">TRY AGAIN</a>
+  </div>
+
+  <div id="winGame" class="modal">
+    <div class="col videoDiv">
+      <video id="winVideo" width="980" height="538" controls autoplay>
+        <source src="video-win.m4v" type="video/mp4" />
+      </video>
+    </div>
+    <a href="index.html" class="btn btn-play-again">PLAY AGAIN</a>
+  </div>
+
+
+  <script type="text/javascript" src="page.js"></script>
+  <script type="text/javascript" src="player.js"></script>
+  <script type="text/javascript" src="boss.js"></script>
+  <script type="text/javascript" src="mainApp.js"></script>
+  <script type="text/javascript" src="bullets.js"></script>
+</body>
+
 </html>

@@ -22,11 +22,14 @@ class Player {
     this.setListeners();
     this.crawl = 0;
     this.bombBulletsAvailable = 4;
-
     this.bullets = [];
     this.bombBullets = [];
     this.moveRightTrue = undefined;
     this.moveLeftTrue = undefined;
+    this.invincible = false;
+    this.invincibleCounter = 20;
+    this.jumping = false
+    this.shooting = false;
   }
 
   drawPlayer(framesCounter) {
@@ -55,41 +58,58 @@ class Player {
       return bullet.x < this.windowSize.x || bullet.y < this.windowSize.y;
     });
     //
-    this.bullets.forEach(function(bullet) {
+    this.bullets.forEach(function (bullet) {
       bullet.draw();
       bullet.move();
     });
 
-    this.bombBullets.forEach(function(bombBullet) {
+    this.bombBullets.forEach(function (bombBullet) {
       bombBullet.draw();
       bombBullet.move();
     });
   }
   setListeners() {
-    document.onkeydown = function(event) {
+    document.onkeydown = function (event) {
       if (event.keyCode == this.keys.DOWN) {
-        this.crawl = 1;
-        if (this.y == this.y0) {
-          if (this.y0 <= this.windowSize.y * 0.65) console.log("Checckkkk");
-          this.y0 = this.windowSize.y * 0.65 + 100;
-          this.y = this.y0 + 100;
+        if (this.y === this.y0) {
+          this.crawl = 1;
+          this.y = this.y0 + 140;
         }
+        // if (this.y == this.y0) {
+        //   if (this.y0 <= this.windowSize.y * 0.65)
+        //     this.y0 = this.windowSize.y * 0.65 + 100;
+        //   this.y = this.y0 + 140;
+        // }
       } else if (event.keyCode === this.keys.LEFT) {
         this.moveLeftTrue = true;
       } else if (event.keyCode === this.keys.RIGHT) {
         this.moveRightTrue = true;
-      } else if (
+      } else if (event.keyCode === this.keys.Q_KEY) {
+        if (this.invincibleCounter >= 20) {
+          this.invincible = true
+          this.invincibleCounter = 0
+          MainApp.invincibleCounter = 0
+          this.uginProtected = new Audio(),
+            this.uginProtected.src = "sound/uginBreathing.mp3",
+            this.uginProtected.play();
+          setTimeout(() => { this.invincible = false }, 3000)
+        }
+      }
+      else if (
         event.keyCode === this.keys.TOP &&
         this.y < this.y0 &&
-        this.y > this.h - 50
+        this.y > this.h - 50 &&
+        this.jumping === false
       ) {
-        this.img.src = "images/playerJump.png";
+        if (!this.invincible) { this.img.src = "images/playerJump.png"; }
+        this.jumping = true
         this.y -= 45;
         this.vy -= 10;
       } else if (event.keyCode === this.keys.TOP && this.y == this.y0) {
         this.y -= 45;
         this.vy -= 10;
-      } else if (event.keyCode == this.keys.SPACE) {
+      } else if (event.keyCode == this.keys.SPACE && this.shooting === false) {
+        this.shooting = true
         this.shoot();
       } else if (event.keyCode == this.keys.E_KEY) {
         if (this.bombBulletsAvailable > 0) {
@@ -98,7 +118,7 @@ class Player {
       }
     }.bind(this);
 
-    document.onkeyup = function(event) {
+    document.onkeyup = function (event) {
       if (event.keyCode === this.keys.RIGHT) {
         this.moveRightTrue = false;
       } else if (event.keyCode === this.keys.LEFT) {
@@ -106,8 +126,13 @@ class Player {
       } else if (event.keyCode === this.keys.DOWN) {
         this.crawl = 0;
         this.h = 240;
-        this.y += 100;
-        this.y0 = this.windowSize.y * 0.65;
+      } else if (
+        event.keyCode === this.keys.TOP &&
+        this.jumping === true
+      ) {
+        this.jumping = false
+      } else if (event.keyCode == this.keys.SPACE && this.shooting === true) {
+        this.shooting = false
       }
     }.bind(this);
   }
@@ -119,8 +144,8 @@ class Player {
     if (this.moveLeftTrue) this.x -= 7;
   }
   moveDown() {
-    this.img.src = "images/boss.png";
-    this.h = 100;
+    this.img.src = "images/playerCrawl.png";
+    this.h = 120;
   }
 
   checkIfFalling() {
@@ -131,17 +156,23 @@ class Player {
     if (this.x < this.windowSize.x * 0.6) this.moveRight();
     if (this.x > 0) this.moveLeft();
     if (this.crawl === 1) this.moveDown();
+    if (this.invincible) {
+      this.img.src = "images/uginProtection.png"
+    }
+    if (!this.invincible && this.y == this.y0 && this.crawl === 0) this.img.src = "images/player.png"
 
     // Aumenta la velocidad en el eje y.
     let gravity = 0.4;
 
     // solo salta cuando el personaje está en el suelo
-    if (this.y >= this.y0) {
-      this.vy = 1;
-      this.y = this.y0;
-    } else {
-      this.vy += gravity;
-      this.y += this.vy;
+    if (!this.crawl) {
+      if (this.y >= this.y0) {
+        this.vy = 1;
+        this.y = this.y0;
+      } else {
+        this.vy += gravity;
+        this.y += this.vy;
+      }
     }
   }
   shoot() {
@@ -151,7 +182,6 @@ class Player {
       this.h,
       this.ctx
     );
-
     this.bullets.push(bullet);
   }
 
@@ -173,6 +203,10 @@ class Player {
     if (arg.player.bombBulletsAvailable < 4) {
       arg.player.bombBulletsAvailable++;
       MainApp.catBombs.bombBulletsAvailable++;
+    }
+    if (arg.player.invincibleCounter < 21) {
+      arg.player.invincibleCounter++
+      MainApp.invincibleCounter++
     }
   }
 

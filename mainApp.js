@@ -15,15 +15,18 @@ const MainApp = {
     RIGHT: 68,
     SPACE: 32,
     E_KEY: 69,
-    DOWN: 83
+    DOWN: 83,
+    Q_KEY: 81,
   },
   lifecounter: 8,
   playerisHit: true,
   playerisHitQuote: true,
   bossIsHit: true,
   introCounter: 0,
+  trumpQuotesArray: ["sound/china1.mp3", "sound/trumpQuote1.mp3", "sound/trumpQuote2.mp3", "sound/china2.mp3", "sound/chinatriple.mp3", "sound/make america great again.mp3", "sound/chinatriple2.mp3"],
+  barkArray: ["sound/bark1.mp3", "sound/bark2.mp3", "sound/bark3.mp3"],
 
-  init: function(id) {
+  init: function (id) {
     this.canvasDom = document.getElementById(id);
     this.ctx = this.canvasDom.getContext("2d");
     this.setDimensions();
@@ -45,7 +48,7 @@ const MainApp = {
   //   this.intro.draw();
   //   if (this.introCounter < 8) this.introCounter++;
   // },
-  startGame: function() {
+  startGame: function () {
     this.fps = 60;
     this.reset();
     setInterval(this.player.rechargeBullets, 4000, this);
@@ -53,6 +56,12 @@ const MainApp = {
     // controlamos que frameCounter no sea superior a 1000
     setInterval(() => {
       this.clear();
+
+      if (this.mainTune.ended) {
+        this.mainTune.currentTime = 0
+        this.mainTune.play()
+      }
+
       if (this.framesCounter > 1000) {
         this.framesCounter = 20;
       }
@@ -79,11 +88,34 @@ const MainApp = {
         this.bossIsHit = true;
         this.eliminateCollisionGunShots();
       }
+
+      //  COLLISION WALLS
+      if (this.wallCollisionsReceiving()) {
+        this.playerisHit = false;
+      }
+
+      if (!this.playerisHit && this.wallCollisionsReceiving() && !this.player.invincible) {
+        this.playerisHit = true;
+        this.playerUi.lifecounter -= 1;
+        this.eliminateWallCollision();
+      }
+
+      //  COLLISION PUTINS
+
+      if (this.putinCollision()) {
+        this.playerisHit = false;
+      }
+      if (!this.playerisHit && this.putinCollision() && !this.player.invincible) {
+        this.playerisHit = true;
+        this.playerUi.lifecounter -= 1;
+        this.eliminatePutinCollision();
+      }
+
       // COLLISIONS TWEETS
       if (!this.playerCollisions1()) {
         this.playerisHit = false;
       }
-      if (!this.playerisHit && this.playerCollisions1()) {
+      if (!this.playerisHit && this.playerCollisions1() && !this.player.invincible) {
         this.playerisHit = true;
         this.playerUi.lifecounter -= 1;
         this.eliminateCollisionTweets();
@@ -92,7 +124,7 @@ const MainApp = {
       if (!this.playerCollisions2()) {
         this.playerisHitQuote = false;
       }
-      if (!this.playerisHitQuote && this.playerCollisions2()) {
+      if (!this.playerisHitQuote && this.playerCollisions2() && !this.player.invincible) {
         this.playerisHitQuote = true;
         this.playerUi.lifecounter -= 1;
         this.eliminateCollisionQuotes();
@@ -109,7 +141,7 @@ const MainApp = {
     }, 1000 / this.fps);
   },
 
-  setDimensions: function() {
+  setDimensions: function () {
     this.canvasDom.setAttribute("width", window.innerWidth - 20);
     this.canvasDom.setAttribute("height", window.innerHeight - 20);
     // this.windowSize.y = window.innerHeight;
@@ -118,11 +150,15 @@ const MainApp = {
     this.windowSize.x = window.innerWidth;
   },
 
-  setHandlers: function() {
+  setHandlers: function () {
     window.onresize = () => this.setDimensions();
   },
 
-  reset: function() {
+  reset: function () {
+    this.mainTune = new Audio(),
+      this.mainTune.src = "",
+      this.mainTune.play();
+
     this.player = new Player(
       this.ctx,
       this.windowSize,
@@ -139,55 +175,71 @@ const MainApp = {
     this.framesCounter = 0;
     this.playerUi = new PlayerUI(this.ctx, this.windowSize, this.lifecounter);
     this.catBombs = new CatBombs(this.ctx, this.player.bombBulletsAvailable);
+    this.humanRights = new HumanRights(this.ctx);
   },
 
-  drawAll: function() {
+  drawAll: function () {
     this.background.drawBackground();
     this.player.drawPlayer(this.framesCounter);
     this.boss.drawBoss(this.framesCounter, this.framesCounterBullets);
     this.playerUi.drawUi();
     this.catBombs.draw();
+    this.humanRights.draw();
   },
 
-  moveAll: function() {
+  moveAll: function () {
     this.player.move();
     this.boss.move();
     // this.boss.animateImg(this.framesCounter);
   },
 
-  clear: function() {
+  clear: function () {
     this.ctx.clearRect(0, 0, this.windowSize.x, this.windowSize.y);
   },
 
-  eliminateCollisionCatBomb: function() {
+  drawCollision() {
+    this.collisionAnimation = new Image(),
+      this.collisionAnimation.src = "images/collision.png"
+    MainApp.ctx.drawImage(this.collisionAnimation, obstacle.x - 40, obstacle.y - 40, 30, 30)
+  },
+
+  eliminateCollisionCatBomb: function () {
     return this.player.bombBullets.some(obstacle => {
       if (
         this.boss.x <= obstacle.x + obstacle.w &&
         this.boss.y <= obstacle.y &&
         this.boss.y + this.boss.h >= obstacle.y + obstacle.w
       ) {
-        this.player.bombBullets = this.player.bombBullets.filter(function(el) {
+
+        // WALL CON VIDA WALL CON LIFE crea O un.some dentro un .some O un forEAch de los muros y dentro le metes el .some
+
+        this.player.bombBullets = this.player.bombBullets.filter(function (el) {
+          this.catBombAudio = new Audio();
+          let meawArray = ["sound/meaw.mp3", "sound/meaw2.mp3", "sound/meaw3.mp3"];
+          this.catBombAudio.src = meawArray[Math.floor(Math.random() * 3)]
+          this.catBombAudio.play();
+
           return el !== obstacle;
         });
       }
     });
   },
 
-  eliminateCollisionGunShots: function() {
+  eliminateCollisionGunShots: function () {
     return this.player.bullets.some(obstacle => {
       if (
         this.boss.x <= obstacle.x + obstacle.w &&
         this.boss.y <= obstacle.y &&
         this.boss.y + this.boss.h >= obstacle.y + obstacle.w
       ) {
-        this.player.bullets = this.player.bullets.filter(function(el) {
+        this.player.bullets = this.player.bullets.filter(function (el) {
           return el !== obstacle;
         });
       }
     });
   },
 
-  eliminateCollisionTweets: function() {
+  eliminateCollisionTweets: function () {
     return this.boss.bossShots2.some(obstacle => {
       if (
         this.player.x + this.player.w >= obstacle.randomX &&
@@ -195,14 +247,17 @@ const MainApp = {
         this.player.y <= obstacle.y + obstacle.h &&
         this.player.y + this.player.h >= obstacle.y
       ) {
-        this.boss.bossShots2 = this.boss.bossShots2.filter(function(el) {
+        this.boss.bossShots2 = this.boss.bossShots2.filter(function (el) {
+          this.barkAudio = new Audio(),
+            this.barkAudio.src = MainApp.barkArray[Math.floor(Math.random() * 3)]
+          this.barkAudio.play();
           return el !== obstacle;
         });
       }
     });
   },
 
-  eliminateCollisionQuotes: function() {
+  eliminateCollisionQuotes: function () {
     return this.boss.bossShots1.some(obstacle => {
       if (
         this.player.x + this.player.w >= obstacle.x &&
@@ -210,15 +265,55 @@ const MainApp = {
         this.player.y <= obstacle.y + obstacle.h &&
         this.player.y + this.player.h >= obstacle.y
       ) {
-        this.boss.bossShots1 = this.boss.bossShots1.filter(function(el) {
+        this.boss.bossShots1 = this.boss.bossShots1.filter((el) => {
+          this.quoteAudio = new Audio(),
+            this.quoteAudio.src = this.trumpQuotesArray[Math.floor(Math.random() * 7)]
+          this.quoteAudio.play();
           return el !== obstacle;
         });
       }
     });
   },
 
-  bossCollisions1: function() {
+  eliminateWallCollision: function () {
+    return this.boss.bossWalls.some(obstacle => {
+      if (
+        this.player.x + this.player.w >= obstacle.x + 100 &&
+        this.player.x < obstacle.x + obstacle.w &&
+        this.player.y + 100 <= obstacle.y + obstacle.h &&
+        this.player.y + this.player.h - 10 >= obstacle.y
+      ) {
+        this.boss.bossWalls = this.boss.bossWalls.filter((el) => {
+          this.quoteAudio = new Audio(),
+            this.quoteAudio.src = "sound/I will build a wall.mp3"
+          this.quoteAudio.play();
+          return el !== obstacle;
+        });
+      }
+    });
+  },
+
+  eliminatePutinCollision: function () {
+    return this.boss.putinsArr.some(obstacle => {
+      if (
+        this.player.x + this.player.w >= obstacle.x &&
+        this.player.x < obstacle.x + obstacle.w &&
+        this.player.y <= obstacle.y + obstacle.h &&
+        this.player.y + this.player.h >= obstacle.y
+      ) {
+        this.boss.putinsArr = this.boss.putinsArr.filter((el) => {
+          this.quoteAudio = new Audio(),
+            this.quoteAudio.src = "sound/russia.mp3"
+          this.quoteAudio.play();
+          return el !== obstacle;
+        });
+      }
+    });
+  },
+
+  bossCollisions1: function () {
     return this.player.bombBullets.some(obstacle => {
+
       if (
         this.boss.x <= obstacle.x + obstacle.w &&
         this.boss.x + this.boss.w >= obstacle.x &&
@@ -230,7 +325,7 @@ const MainApp = {
     });
   },
 
-  bossCollisions2: function() {
+  bossCollisions2: function () {
     return this.player.bullets.some(obstacle => {
       return (
         this.boss.x <= obstacle.x + obstacle.w &&
@@ -239,7 +334,30 @@ const MainApp = {
       );
     });
   },
-  playerCollisions1: function() {
+
+  wallCollisionsReceiving: function () {
+    return this.boss.bossWalls.some(obstacle => {
+      return (
+        this.player.x + this.player.w >= obstacle.x + 100 &&
+        this.player.x < obstacle.x + obstacle.w &&
+        this.player.y + 100 <= obstacle.y + obstacle.h &&
+        this.player.y + this.player.h - 10 >= obstacle.y
+      )
+    });
+  },
+
+  putinCollision: function () {
+    return this.boss.putinsArr.some(obstacle => {
+      return (
+        this.player.x + this.player.w >= obstacle.x &&
+        this.player.x < obstacle.x + obstacle.w &&
+        this.player.y <= obstacle.y + obstacle.h &&
+        this.player.y + this.player.h >= obstacle.y
+      )
+    });
+  },
+
+  playerCollisions1: function () {
     return this.boss.bossShots2.some(obstacle => {
       return (
         this.player.x + this.player.w >= obstacle.randomX &&
@@ -249,7 +367,7 @@ const MainApp = {
       );
     });
   },
-  playerCollisions2: function() {
+  playerCollisions2: function () {
     return this.boss.bossShots1.some(obstacle => {
       return (
         this.player.x + this.player.w >= obstacle.x &&
@@ -260,24 +378,20 @@ const MainApp = {
     });
   },
 
-  // UPDATESCOREPLAYER... SOBRA????
-  // updateScorePlayer: function() {
-  //   this.lifecounter -= 1;
-  //   this.playerUi = new PlayerUI(this.ctx, this.windowSize, this.lifecounter);
-  //   this.playerUi.drawUi();
-  // },
 
-  gameOver: function() {
+  gameOver: function () {
     for (i = 0; i < 100; i++) {
       window.clearInterval(i);
     }
+    openModal()
   },
 
-  gameWon: function() {
+  gameWon: function () {
     alert("you won!");
     for (i = 0; i < 100; i++) {
       window.clearInterval(i);
     }
+    openModal2()
   }
 };
 
@@ -318,11 +432,11 @@ class PlayerUI {
 }
 
 class CatBombs {
-  constructor(ctx, bombBulletsAvailable) {
+  constructor(ctx, ) {
     this.ctx = ctx;
     this.x = 240;
     this.y = 50;
-    this.bombBulletsAvailable = bombBulletsAvailable;
+    this.bombBulletsAvailable = 4
     this.img = new Image();
     this.bombsImagesArray = [
       "images/catbomb0.png",
@@ -338,27 +452,30 @@ class CatBombs {
   }
 }
 
-// class Intro {
-//   constructor(ctx, windowSize) {
-//     this.ctx = ctx;
-//     this.windowSize = windowSize;
-//     this.introArray = [
-//       "images/intro1.jpg",
-//       "images/intro2.jpg",
-//       "images/intro3.jpg",
-//       "images/intro4.jpg",
-//       "images/intro5.jpg",
-//       "images/intro6.jpg",
-//       "images/intro6.jpg"
-//     ];
-//   }
-//   draw() {
-//     this.img = new Image();
-//     this.img.src = this.introArray[MainApp.introCounter];
-//     this.ctx.drawImage(this.img, 0, 0, this.windowSize.x, this.windowSize.y);
-//   }
-// }
+class HumanRights {
+  constructor(ctx, ) {
+    this.ctx = ctx;
+    this.x = 780;
+    this.y = 50;
+    this.invincibleCounter = 20;
+    this.img = new Image();
+    this.arrayIndex = this.checkInvincible()
 
+    this.humanRightsImages = [
+      "images/humanrightsavailable.png",
+      "images/humanrightsnotavailable.png"
+    ];
+  }
+  checkInvincible() {
+    if (this.invincibleCounter === 20) { return 0 } else { return 1 }
+  }
+  draw() {
+    let casa = 0
+    if (MainApp.player.invincibleCounter >= 20) { casa = 0 } else { casa = 1 }
+    this.img.src = this.humanRightsImages[casa];
+    this.ctx.drawImage(this.img, this.x, this.y, 80, 80);
+  }
+}
 
 // class CollisionExplosion {
 //   constructor(ctx, x, y) {
