@@ -35,8 +35,8 @@ class Boss {
     else if (this.health < this.originalHealth * 0.5 && this.health >= this.originalHealth * 0.3) {
       if (this.halfHealth === false) {
         this.halfHealth = true
-        this.quoteAudio = new Audio(),
-          this.quoteAudio.src = "sound/I will build a wall.mp3"
+        this.quoteAudio = new Audio()
+        this.quoteAudio.src = "sound/I will build a wall.mp3"
         this.quoteAudio.play();
         MainApp.mainTune.src = "sound/finalBattleMusic.mp3"
         MainApp.mainTune.play();
