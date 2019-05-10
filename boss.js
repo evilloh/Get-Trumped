@@ -38,6 +38,8 @@ class Boss {
         this.quoteAudio = new Audio(),
           this.quoteAudio.src = "sound/I will build a wall.mp3"
         this.quoteAudio.play();
+        MainApp.mainTune.src = "sound/finalBattleMusic.mp3"
+        MainApp.mainTune.play();
       }
       this.img.src = this.bossImagesArray[2]
     }
@@ -95,8 +97,7 @@ class Boss {
     if (framesCounterBullets % 400 === 0 && this.health <= this.originalHealth * 0.5 && this.health > this.originalHealth * .3) {
 
       this.makeWalls();
-      MainApp.mainTune.src = "sound/finalBattleMusic.mp3"
-      MainApp.mainTune.play();
+
     }
 
     if (framesCounterBullets % 150 === 0 && this.health <= this.originalHealth * .3) {
