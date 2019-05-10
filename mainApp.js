@@ -156,7 +156,8 @@ const MainApp = {
 
   reset: function () {
     this.mainTune = new Audio(),
-      this.mainTune.src = "",
+      this.mainTune.volume = 0.3
+    this.mainTune.src = "sound/mainTheme.mp3",
       this.mainTune.play();
 
     this.player = new Player(
@@ -260,7 +261,7 @@ const MainApp = {
   eliminateCollisionQuotes: function () {
     return this.boss.bossShots1.some(obstacle => {
       if (
-        this.player.x + this.player.w >= obstacle.x &&
+        this.player.x + this.player.w - 70 >= obstacle.x &&
         this.player.x < obstacle.x + obstacle.w &&
         this.player.y <= obstacle.y + obstacle.h &&
         this.player.y + this.player.h >= obstacle.y
@@ -270,6 +271,7 @@ const MainApp = {
             this.quoteAudio.src = this.trumpQuotesArray[Math.floor(Math.random() * 7)]
           this.quoteAudio.play();
           return el !== obstacle;
+
         });
       }
     });
@@ -370,7 +372,7 @@ const MainApp = {
   playerCollisions2: function () {
     return this.boss.bossShots1.some(obstacle => {
       return (
-        this.player.x + this.player.w >= obstacle.x &&
+        this.player.x + this.player.w - 70 >= obstacle.x &&
         this.player.x < obstacle.x + obstacle.w &&
         this.player.y <= obstacle.y + obstacle.h &&
         this.player.y + this.player.h >= obstacle.y
@@ -387,7 +389,6 @@ const MainApp = {
   },
 
   gameWon: function () {
-    alert("you won!");
     for (i = 0; i < 100; i++) {
       window.clearInterval(i);
     }

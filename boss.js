@@ -95,6 +95,8 @@ class Boss {
     if (framesCounterBullets % 400 === 0 && this.health <= this.originalHealth * 0.5 && this.health > this.originalHealth * .3) {
 
       this.makeWalls();
+      MainApp.mainTune.src = "sound/finalBattleMusic.mp3"
+      MainApp.mainTune.play();
     }
 
     if (framesCounterBullets % 150 === 0 && this.health <= this.originalHealth * .3) {

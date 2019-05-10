@@ -70,7 +70,7 @@ class Player {
   }
   setListeners() {
     document.onkeydown = function (event) {
-      if (event.keyCode == this.keys.DOWN) {
+      if (event.keyCode == this.keys.DOWN || event.keyCode === 40) {
         if (this.y === this.y0) {
           this.crawl = 1;
           this.y = this.y0 + 140;
@@ -80,9 +80,9 @@ class Player {
         //     this.y0 = this.windowSize.y * 0.65 + 100;
         //   this.y = this.y0 + 140;
         // }
-      } else if (event.keyCode === this.keys.LEFT) {
+      } else if (event.keyCode === this.keys.LEFT || event.keyCode === 37) {
         this.moveLeftTrue = true;
-      } else if (event.keyCode === this.keys.RIGHT) {
+      } else if (event.keyCode === this.keys.RIGHT || event.keyCode === 39) {
         this.moveRightTrue = true;
       } else if (event.keyCode === this.keys.Q_KEY) {
         if (this.invincibleCounter >= 20) {
@@ -100,12 +100,16 @@ class Player {
         this.y < this.y0 &&
         this.y > this.h - 50 &&
         this.jumping === false
+        || event.keyCode === 38 &&
+        this.y < this.y0 &&
+        this.y > this.h - 50 &&
+        this.jumping === false
       ) {
         if (!this.invincible) { this.img.src = "images/playerJump.png"; }
         this.jumping = true
         this.y -= 45;
         this.vy -= 10;
-      } else if (event.keyCode === this.keys.TOP && this.y == this.y0) {
+      } else if (event.keyCode === this.keys.TOP && this.y == this.y0 || event.keyCode === 38 && this.y == this.y0) {
         this.y -= 45;
         this.vy -= 10;
       } else if (event.keyCode == this.keys.SPACE && this.shooting === false) {
@@ -119,15 +123,16 @@ class Player {
     }.bind(this);
 
     document.onkeyup = function (event) {
-      if (event.keyCode === this.keys.RIGHT) {
+      if (event.keyCode === this.keys.RIGHT || event.keyCode === 39) {
         this.moveRightTrue = false;
-      } else if (event.keyCode === this.keys.LEFT) {
+      } else if (event.keyCode === this.keys.LEFT || event.keyCode === 37) {
         this.moveLeftTrue = false;
-      } else if (event.keyCode === this.keys.DOWN) {
+      } else if (event.keyCode === this.keys.DOWN || event.keyCode === 40) {
         this.crawl = 0;
         this.h = 240;
       } else if (
         event.keyCode === this.keys.TOP &&
+        this.jumping === true || event.keyCode === 38 &&
         this.jumping === true
       ) {
         this.jumping = false
@@ -159,7 +164,8 @@ class Player {
     if (this.invincible) {
       this.img.src = "images/uginProtection.png"
     }
-    if (!this.invincible && this.y == this.y0 && this.crawl === 0) this.img.src = "images/player.png"
+    if (!this.invincible && this.y == this.y0 && this.crawl === 0) this.img.src = "images/playerShadow.png"
+    if (!this.invincible && this.y != this.y0 && this.crawl === 0) this.img.src = "images/playerJump.png"
 
     // Aumenta la velocidad en el eje y.
     let gravity = 0.4;
